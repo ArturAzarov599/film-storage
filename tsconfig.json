@@ -20,7 +20,9 @@
       "@routes/*": ["./src/routes/*"],
       "@interfaces/*": ["./src/interfaces/*"],
       "@customTypes/*": ["./src/types/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@controllers/*": ["./src/controllers/*"],
+      "@services/*": ["./src/services/*"]
     }
   }
 }

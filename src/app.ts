@@ -5,7 +5,8 @@ import bodyParser from "body-parser";
 
 import sequelize from "@configuration/database";
 
-import filmsRouter from "@routes/films";
+import filmsRouter from "@routes/films.route";
+import AppController from "@controllers/app.controller";
 
 dotenv.config();
 
@@ -19,6 +20,8 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/films", filmsRouter);
 
+app.use("*", AppController.get404Page);
+
 const initDatabase = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
@@ -31,8 +34,8 @@ const initDatabase = async (): Promise<void> => {
   }
 };
 
-initDatabase();
-
-app.listen(port, () => {
-  console.log(`[server]: server is running on port: ${port}`);
-});
+initDatabase().then(() =>
+  app.listen(port, () => {
+    console.log(`[server]: server is running on port: ${port}`);
+  })
+);

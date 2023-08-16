@@ -2,4 +2,7 @@
 /dist
 /uploads
 
-package-lock.json
+/*.sqlite
+
+# Env files
+.env

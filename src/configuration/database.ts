@@ -1,12 +1,14 @@
-import Film from "@models/Film.model";
-import { join } from "path";
 import { Sequelize } from "sequelize-typescript";
+import dotenv from "dotenv";
+
+import Film from "@models/Film.model";
+
+dotenv.config();
 
 const sequelize = new Sequelize({
-  database: "some_db",
+  database: process.env.DATABASE_NAME,
   dialect: "sqlite",
-  storage: "data.sqlite",
-  // models: [join(__dirname + "**/**/*.model.js")],
+  storage: process.env.DATABASE_STORAGE_NAME,
 });
 
 sequelize.addModels([Film]);

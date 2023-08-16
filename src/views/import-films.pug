@@ -1,20 +1,8 @@
-doctype html
-html
-  head
-    title File Download
-    link(rel="stylesheet" href="/styles.css")
+extends import-films-layout.pug
 
-  body
-    header
-      h1 File Download
-      h6 NOTE: Supports only .txt format
-
-    main
+block content
       form(action="/films/import-films" method="post" enctype="multipart/form-data")
         label(for="data") Choose a File to Download:
         input(type="file" id="data" name="data" accept=".txt")
 
         button(type="submit") Download File
-
-    footer
-      p

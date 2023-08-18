@@ -5,20 +5,28 @@ import bodyParser from "body-parser";
 
 import sequelize from "@configuration/database";
 
-import filmsRouter from "@routes/films.route";
+import movieRouter from "@routes/movie.router";
+import userRouter from "@routes/user.router";
+import sessionRouter from "@routes/session.router";
+
 import AppController from "@controllers/app.controller";
+import { authMiddleware } from "@middlewares/auth.middleware";
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT;
+const port = process.env.APP_PORT;
+
+const prefix = "/api/v1/";
 
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/films", filmsRouter);
+app.use(`${prefix}movies`, authMiddleware, movieRouter);
+app.use(`${prefix}users`, userRouter);
+app.use(`${prefix}sessions`, sessionRouter);
 
 app.use("*", AppController.get404Page);
 

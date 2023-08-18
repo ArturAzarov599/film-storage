@@ -22,7 +22,9 @@
       "@customTypes/*": ["./src/types/*"],
       "@utils/*": ["./src/utils/*"],
       "@controllers/*": ["./src/controllers/*"],
-      "@services/*": ["./src/services/*"]
+      "@services/*": ["./src/services/*"],
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@constants/*": ["./src/constants/*"]
     }
   }
 }

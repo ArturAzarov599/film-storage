@@ -33,12 +33,16 @@ movieRouter.patch(
   MovieController.updateMovie
 );
 
-movieRouter.get("/import-movies", MovieController.getTemplate);
-
 movieRouter.get(
   "/",
   validateGetMoviesQueryParamsMiddleware,
   MovieController.getMovies
+);
+
+movieRouter.post(
+  "/import",
+  upload.single("movies"),
+  MovieController.saveImportedData
 );
 
 movieRouter.get(
@@ -47,14 +51,10 @@ movieRouter.get(
   MovieController.getMovieDetails
 );
 
-movieRouter.post(
-  "/import-movies",
-  upload.single("data"),
-  MovieController.saveImportedData
-);
+movieRouter.get("/import", MovieController.getTemplate);
 
-movieRouter.get("/import-movies-success", MovieController.getSuccessPage);
+movieRouter.get("/import-success", MovieController.getSuccessPage);
 
-movieRouter.get("/import-movies-failure", MovieController.getFailPage);
+movieRouter.get("/import-failure", MovieController.getFailPage);
 
 export default movieRouter;

@@ -24,7 +24,11 @@ app.set("views", __dirname + "/views");
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use(`${prefix}movies`, authMiddleware, movieRouter);
+app.use(
+  `${prefix}movies`,
+  //  authMiddleware,
+  movieRouter
+);
 app.use(`${prefix}users`, userRouter);
 app.use(`${prefix}sessions`, sessionRouter);
 

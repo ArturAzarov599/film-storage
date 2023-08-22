@@ -8,7 +8,7 @@ class SessionController {
   static async createSession(
     req: Request<{}, {}, { email: string; password: string }>,
     res: Response
-  ) {
+  ): Promise<void> {
     try {
       const user = await UserService.getUser(req.body.email);
 

@@ -1,10 +1,11 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
+import { movieFormats } from "@constants/movie.constants";
+
 import { IMovie } from "@interfaces/movie.interface";
 
 import { TMovieFormat } from "@customTypes/movie.types";
-import { movieFormats } from "@constants/movie.constants";
 
 interface IExtractDataFromTxtFile {
   totalCount: number;

@@ -46,3 +46,52 @@ For launching the application you need to make these steps:
 
 # Link to image in DockerHub
 https://hub.docker.com/r/arthurio222/movies
+
+# Available endpoints: 
+
+- **Users**
+
+*Method*: POST
+*Endpoint*: `/api/v1/users`
+*Request Body*: JSON object containing valid email, name, password that have more than 7 characters and confirmPassword
+
+- **Sessions**
+
+*Method*: POST
+*Endpoint*: `/api/v1/sessions`
+*Request Body*: JSON object containing valid email and password that have more than 7 characters
+
+- **Movies**
+All movies endpoints must have an authorization header
+
+*Method*: POST
+*Endpoint*: `/api/v1/movies`
+*Request Body*: JSON object containing valid movie data
+
+*Method*: DELETE
+*Endpoint*: `/api/v1/movies`
+*Parameter*: `id` (number) - The ID of the movie
+
+*Method*: PATCH
+*Endpoint*: `/api/v1/movies`
+*Parameter*: `id` (number) - The ID of the movie
+*Request Body*: JSON object containing valid movie data
+
+*Method*: GET
+*Endpoint*: `/api/v1/movies`
+*Query parameters*: 
+  `actor` (string, optional) - the name of actor
+  `title` (string, optional) - the title of movie
+  `search` (string, optional) - example movie_title:actor, the title and actor for searching
+  `sort` ("year"/"id"/"title", default "id") - the sort by parameter
+  `order` ("ASC"/"DESC", default "ASC") - the sort order
+  `limit` (number, optional, default 10) - the response size
+  `offset` (number, optional, default 0) - skip elements
+
+*Method*: GET
+*Endpoint*: `/api/v1/movies`
+*Parameter*: `id` (number) - The ID of the movie
+
+*Method*: POST
+*Endpoint*: `/api/v1/movies/import`
+*Form data*: key movies, value any text file

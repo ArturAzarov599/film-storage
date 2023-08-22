@@ -1,8 +1,10 @@
-import { body, param, query } from "express-validator";
+import { body, check, param, query } from "express-validator";
 
 import { validationHandler } from "@utils/validationHandler";
 
 import { movieFormats } from "@constants/movie.constants";
+
+const year = new Date().getFullYear();
 
 // user router
 export const validateUserCreationDataMiddleware = [
@@ -35,17 +37,25 @@ export const validateSessionCreationDataMiddleware = [
 // movie router
 const validationIdParam = param("id").isInt({ min: 1 }).toInt();
 const createMovieDataValidation = [
-  body("title").exists().isLength({ min: 2 }).isString(),
-  body("year").exists().isInt(),
-  body("format")
+  body("title")
+    .isLength({ min: 2 })
     .isString()
-    .custom((format) => movieFormats.find((mF) => mF === format))
-    .withMessage(
-      `Wrong movie format. Available values is: "VHS", "DVD", "Blu-Ray"`
-    ),
+    .custom((title) => {
+      if (!title.trim()) return false;
+
+      return true;
+    })
+    .withMessage(`Title must contain numbers and characters!`),
+  body(
+    "year",
+    `Year must be greater than 1900 and smaller than ${year + 1}`
+  ).isInt({ min: 1900, max: year }),
+  body(
+    "format",
+    `Wrong movie format. Available values is: "VHS", "DVD", "Blu-Ray"`
+  ).isIn(movieFormats),
   body("actors")
     .isArray()
-    .exists()
     .custom((actors) => actors.every((actor: any) => typeof actor === "string"))
     .withMessage("Wrong actor/actors data type. Expected strings"),
 ];
@@ -74,13 +84,11 @@ export const validateGetMoviesQueryParamsMiddleware = [
     ),
   query("sort")
     .optional()
-    .custom((sort: string) =>
-      ["year", "id", "title"].find((value) => value === sort)
-    )
+    .isIn(["year", "id", "title"])
     .withMessage(`Unexpected sort field. Expected: "year", "id", "title"`),
   query("order")
     .optional()
-    .custom((order: string) => ["ASC", "DESC"].find((value) => value === order))
+    .isIn(["ASC", "DESC"])
     .withMessage(`Unexpected order value. Expected: "ASC", "DESC"`),
   query("limit").optional().isInt({ min: 1 }),
   query("offset").optional().isInt(),

@@ -7,7 +7,6 @@ import {
   BelongsToMany,
   HasMany,
   Unique,
-  DataType,
 } from "sequelize-typescript";
 
 import MovieModel from "@models/Movie.model";

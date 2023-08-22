@@ -1,7 +1,8 @@
 import ActorModel from "@models/Actor.model";
 
-import { IActor } from "@interfaces/actor.interface";
 import sequelize from "@configuration/database";
+
+import { IActor } from "@interfaces/actor.interface";
 
 class ActorService {
   static async createActors(names: IActor[]): Promise<ActorModel[]> {

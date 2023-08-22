@@ -1,7 +1,7 @@
 extends import-movies-layout.pug
 
 block content
-      form(action="/movie/import-movies" method="post" enctype="multipart/form-data")
+      form(action="/api/v1/movies/import" method="post" enctype="multipart/form-data")
         label(for="data") Choose a File to Download:
         input(type="file" id="data" name="data" accept=".txt")
 

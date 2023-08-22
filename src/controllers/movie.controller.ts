@@ -6,13 +6,7 @@ import MovieActorService from "@services/movie-actor.service";
 
 import { extractDataFromTxtFile } from "@utils/extractDataFromTxtFile";
 
-import {
-  ICreateMovie,
-  IMovieFullData,
-  IGetMoviesQuery,
-} from "@interfaces/movie.interface";
-import sequelize from "@configuration/database";
-import { removeListener } from "process";
+import { ICreateMovie, IGetMoviesQuery } from "@interfaces/movie.interface";
 
 class MovieController {
   static async createMovie(
@@ -100,6 +94,24 @@ class MovieController {
         return;
       }
 
+      const movieWithSameTitle = await MovieService.getMovieBySpecificField(
+        "title",
+        req.body.title
+      );
+
+      if (movieWithSameTitle) {
+        res.status(404).send({
+          status: 0,
+          error: {
+            fields: {
+              id,
+            },
+            code: "TITLE_NOT_UNIQUE",
+          },
+        });
+        return;
+      }
+
       const { actors, ...movieData } = req.body;
       const actorsList = actors.map((actor) => ({ name: actor }));
       const [actorsObjects] = await Promise.all([
@@ -107,7 +119,7 @@ class MovieController {
         MovieService.updateMovie(id, movieData),
         MovieActorService.deleteMoviesByMovieId(id),
       ]);
-      movie.$add("actors", actorsObjects);
+      await movie.$add("actors", actorsObjects);
       const newActorsList = actorsObjects?.map((aD) => aD.dataValues);
 
       res.status(200).send({
@@ -158,9 +170,8 @@ class MovieController {
     res: Response
   ): Promise<void> {
     try {
-      const result = await MovieActorService.findMovies(req.query);
-      console.log(result);
-      const normalizeResult = result.map((record) => record.dataValues.movie);
+      const result = await MovieService.getMovies(req.query);
+      const normalizeResult = result.map((record) => record.dataValues);
 
       res.status(200).send({
         data: normalizeResult,
@@ -194,13 +205,13 @@ class MovieController {
 
   static async saveImportedData(req: Request, res: Response): Promise<void> {
     if (!req.file) {
-      res.redirect("/movie/import-movies-failure?message=Can't find file");
+      res.redirect("/api/v1/movie/import-failure?message=Can't find file");
       return;
     }
 
-    if (req.file?.mimetype !== "text/plain") {
+    if (!req.file?.originalname.endsWith(".txt")) {
       res.redirect(
-        "/movie/import-movies-failure?message=Bad file format. Require txt"
+        "/api/v1/movie/import-failure?message=Bad file format. Require txt"
       );
       return;
     }
@@ -228,26 +239,23 @@ class MovieController {
               createdCount += 1;
               return newMovie;
             } catch (error) {
-              console.log(error);
               return null;
             }
           })
         );
 
-        console.log(movies);
-
         res.send({
           data: movies.filter((v) => v),
           meta: {
-            total: createdCount,
-            imported: result.totalCount,
+            total: result.totalCount,
+            imported: createdCount,
           },
           status: 1,
         });
-        // res.redirect("/movies/import-movies-success");
+        // res.redirect("/api/v1/movies/import-movies-success");
       } catch (error) {
-        // res.send(error).status(500);
-        res.redirect("/movies/import-movies-failure");
+        res.send(error).status(500);
+        // res.redirect("/api/v1/movies/import-failure");
       }
     }
   }

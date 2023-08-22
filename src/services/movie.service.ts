@@ -1,3 +1,5 @@
+import { Op } from "sequelize";
+
 import MovieModel from "@models/Movie.model";
 import ActorModel from "@models/Actor.model";
 
@@ -5,6 +7,7 @@ import {
   IMovie,
   IMovieModel,
   IMovieFullData,
+  IGetMoviesQuery,
 } from "@interfaces/movie.interface";
 import { IActorModel } from "@interfaces/actor.interface";
 
@@ -64,6 +67,41 @@ class MovieService {
         updatedAt: actor.updatedAt,
       })),
     };
+  }
+
+  static getMovies({
+    limit,
+    offset,
+    order = "ASC",
+    sort = "id",
+    actor = "",
+    search = "",
+    title = "",
+  }: IGetMoviesQuery): Promise<MovieModel[]> {
+    const [searchTitle, searchActor] = search.split(":");
+    const movieTitle = searchTitle || title;
+    const movieActor = searchActor || actor;
+    return MovieModel.findAll({
+      include: [
+        {
+          model: ActorModel,
+          where: {
+            name: {
+              [Op.like]: `%${movieActor}%`,
+            },
+          },
+          attributes: [],
+        },
+      ],
+      where: {
+        title: {
+          [Op.like]: `%${movieTitle}%`,
+        },
+      },
+      order: [[sort, order]],
+      limit,
+      offset,
+    });
   }
 }
 
